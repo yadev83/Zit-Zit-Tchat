@@ -3,7 +3,7 @@
 
 ZZT is an Olive Tchat Server/Client solution for all. 
 But mainly our networks course project !
-<img alt="ZZT Tchat Logo" src="images/zit-zit-photo.png" width="200">
+<img alt="ZZT Tchat Logo" src="images/zit-zit-photo.png" width="100">
 
 ## Specifications 
 
