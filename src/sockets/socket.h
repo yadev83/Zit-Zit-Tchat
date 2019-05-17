@@ -28,7 +28,11 @@ SocketManager *newSocket(int domain, int type, int protocol);
 void initSocket(SocketManager *client);
 
 void newConnection(SocketManager *client, char *address, unsigned short int port);
-void connectSocket(SocketManager *client);
+void newServer(SocketManager *sock, unsigned short int port);
+void connectClientSocket(SocketManager *client);
+void connectServerSocket(SocketManager *server);
+
+void serverListener(SocketManager *server, int limit);
 
 void sendString(SocketManager *client, char *msg);
 void getString(SocketManager *client, int size);

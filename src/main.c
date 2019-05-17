@@ -9,7 +9,7 @@ int main(void){
     client = newSocket(PF_INET, SOCK_STREAM, 0);
     initSocket(client);
     newConnection(client, "127.0.0.1", IPPORT_USERRESERVED);
-    connectSocket(client);
+    connectClientSocket(client);
 
     sendString(client, "Hello There !");
     getString(client, 2);

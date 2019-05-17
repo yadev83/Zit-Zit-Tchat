@@ -37,7 +37,12 @@ void newConnection(SocketManager *sock, char *address, unsigned short int port){
     strcpy(sock->address, address);
 }
 
-void connectSocket(SocketManager *sock){
+void newServer(SocketManager *sock, unsigned short int port){
+    sock->port = port;
+    sock->address = NULL;
+}
+
+void connectClientSocket(SocketManager *sock){
     sock->addrLength = sizeof(sock->distantConnection);
     memset(&(sock->distantConnection), 0x00, sock->addrLength);
     sock->distantConnection.sin_family = PF_INET;
@@ -51,6 +56,47 @@ void connectSocket(SocketManager *sock){
     }
 
     printf("Connecté au serveur [%s:%d] avec succès\n\n", sock->address, sock->port);
+}
+
+void connectServerSocket(SocketManager *sock){
+    sock->addrLength = sizeof(sock->distantConnection);
+    memset(&(sock->distantConnection), 0x00, sock->addrLength);
+    sock->distantConnection.sin_family = PF_INET;
+    sock->distantConnection.sin_addr.s_addr = htonl(INADDR_ANY);
+    sock->distantConnection.sin_port = htons(sock->port);
+
+    if(bind(sock->descSocket, (struct sockaddr *)&(sock->distantConnection), sock->addrLength)){
+        perror("bind");
+        exit(-2);
+    }
+
+    printf("Serveur en écoute sur [%s:%d] avec succès\n\n", sock->address, sock->port);
+}
+
+void serverListener(SocketManager *server, int limit){
+    if(listen(server->descSocket, limit) < 0){
+        perror("listen");
+        exit(-3);
+    }
+
+    printf("Socket placée en écoute passive ...\n");
+
+    SocketManager *distant = newSocket(PF_INET, SOCK_STREAM, 0);
+    struct sockaddr_in income;
+    //Serveur en attente indéfiniment
+    while(1){
+        printf("Attente d'une connexion (Ctrl+C pour fermer le serveur)\n\n");
+        distant->descSocket = accept(server->descSocket, (struct sockaddr *)&(income), &(server->addrLength));
+        if (distant->descSocket < 0){
+            perror("accept");
+            closeSocket(distant);
+            closeSocket(server);
+            exit(-4);
+        }else{
+            getString(distant, 100);
+            sendString(distant, "ok");
+        }
+    }
 }
 
 void sendString(SocketManager *sock, char *msg){
