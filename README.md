@@ -63,13 +63,13 @@ Client:
 * Client 
 
 ```
-ZZTc <port> "String name of the Channel"
+./ZZTc <port> "String name of the Channel"
 ```
 
 * Server
 
 ```
-ZZTs <port> "String name of the Channel"
+./ZZTs <port> "String name of the Channel"
 ```
 
 ### Prerequisites
