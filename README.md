@@ -16,23 +16,23 @@ But mainly our networks course project !
 
 * On connexion !hello "String"
 * !<command> 
-	** list
-	** login [a-Z0-1]
-	** version
-	** message <* | @login>
-	** quit
+	* list
+	* login [a-Z0-1]
+	* version
+	* message <* | @login>
+	* quit
 
 ### Architecture
 
 * Port 
 
-	** State **Bind** **Listen**
+	* State: **Bind** **Listen**
 
 * Structure Client
 
-	** Socket (int)
-	** Login (char)
-	** Next (Client)
+	* Socket (int)
+	* Login (char)
+	* Next (Client)
 
 ![ZZT Tchat Architecture ](images/architecture_CS.png?raw=true "Client-Server Architecture")
 ![Client Architecture ](images/mindmap.png?raw=true "Client-Port Architecture ")
