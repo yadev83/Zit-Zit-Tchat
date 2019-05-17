@@ -10,12 +10,12 @@ But mainly our networks course project !
 
 * TCP
 * Support multiclients
-* Software <port> "String"
+* Software < port > "String"
 
 ### Protocole
 
 * On connexion !hello "String"
-* !<command> 
+* ! < command > 
 	* list
 	* login [a-Z0-1]
 	* version
