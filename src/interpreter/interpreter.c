@@ -3,7 +3,8 @@
 #include "string.h"
 #include "interpreter.h"
 int main(void){
-	char string[20];
+	char* string;
+	defineStr(&string, 25);
 	sprintf(string,"!login Martin Corto");
 	printf("%s\n", string);
 	interpreter(string);
@@ -11,28 +12,43 @@ int main(void){
 	return 0;
 }
 void interpreter(char* msg){
-	char cmd[LENCMD]="";
+	char *cmd;
+	defineStr(&cmd, LENCMD);
 	int iDetect;
-	//printf("%d\n", strcmp(&msg[0], "!"));
 	if(msg[0]!='!'){
 		error();
 	}
 	else{
-		iDetect=commandDetect(msg);
-		char* element;
-		element=malloc((strlen(msg)-iDetect)*sizeof(char));
-		strcpy(element, "");
-		strcat(element, &msg[iDetect+1]);
-		for (int i = 1; i < iDetect; ++i)
-		{
-			cmd[i-1]=msg[i];
+		iDetect=IDetect(msg);
+		if(iDetect==1){
+			error();
 		}
+		else{
+		char* element;
+		defineStr(&element, strlen(msg)-iDetect);
+		cutString(cmd, element, msg, iDetect);
+		
 		printf("%s\n", cmd);
 		printf("%s\n", element);
 	}
+	}
 }
 
-int commandDetect(char* msg){
+void defineStr(char** str,int len){
+	*str=malloc(len*sizeof(char));
+	strcpy(*str, "");
+}
+
+void cutString(char* str1, char* str2, char* msg, int k){
+	strcat(str2, &msg[k+1]);
+	for (int i = 1; i < k; ++i)
+		{
+			str1[i-1]=msg[i];
+		}
+	free(msg);
+}
+
+int IDetect(char* msg){
 	int i=1;
 	while(msg[i] != ' '){
 		i++;
