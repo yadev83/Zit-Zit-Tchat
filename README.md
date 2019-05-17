@@ -4,15 +4,15 @@
 ZZT is an Olive Tchat Server/Client solution for all. 
 But mainly our networks course project !
 
-##Specifications 
+## Specifications 
 
-###Server
+### Server
 
 * TCP
 * Support multiclients
 * Software <port> "String"
 
-###Protocole
+### Protocole
 
 * On connexion !hello "String"
 * !<command> 
@@ -22,7 +22,7 @@ But mainly our networks course project !
 	** message <* | @login>
 	** quit
 
-###Architecture
+### Architecture
 
 * Port 
 
