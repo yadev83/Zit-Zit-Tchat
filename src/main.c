@@ -3,12 +3,12 @@
 
 #include "sockets/socket.h"
 
-int main(void){
+int main(int argc, char *argv[]){
     SocketManager *client = NULL;
 
     client = newSocket(PF_INET, SOCK_STREAM, 0);
     initSocket(client);
-    newConnection(client, "127.0.0.1", IPPORT_USERRESERVED);
+    newConnection(client, argv[1], IPPORT_USERRESERVED);
     connectClientSocket(client);
 
     sendString(client, "Hello There !");

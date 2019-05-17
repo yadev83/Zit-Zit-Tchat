@@ -1,5 +1,5 @@
-debug/exec: out/main.o out/sockets/socket.o
-	gcc $^ -o debug/exec
+debug/ZZTc: out/main.o out/sockets/socket.o
+	gcc $^ -o debug/ZZTc
 
 debug/ZZTs: debug/ZZTs.o out/sockets/socket.o
 	gcc $^ -o debug/ZZTs
