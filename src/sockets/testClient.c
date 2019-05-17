@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "sockets/socket.h"
+#include "socket.h"
 
 int main(int argc, char *argv[]){
     SocketManager *client = NULL;

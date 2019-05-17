@@ -138,21 +138,20 @@ void getString(SocketManager *sock, int size){
         break;
 
         default:
-            printf("Message reçu du serveur : \"%s\" (%d bytes)\n\n", recept, bytesNb);
+            printf("Message reçu depuis la connexion distante : \"%s\" (%d bytes)\n", recept, bytesNb);
         break;
     }
 }
 
-
 void closeSocket(SocketManager *sock){
     close(sock->descSocket);
-    printf("Socket client fermé avec succès ! (%d)\n", sock->descSocket);
+    printf("\nSocket client fermé avec succès ! (%d)\n", sock->descSocket);
 }
 
 void deleteSocket(SocketManager *sock){
     free(sock);
     sock = NULL;
 
-    printf("client supprimé avec succès\n");
+    printf("Socket supprimé avec succès\n");
 }
 
