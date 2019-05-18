@@ -6,6 +6,18 @@ debug/ZZTc: out/sockets/ZZTc.o out/sockets/socket.o out/tools/input.o
 debug/ZZTs: out/sockets/ZZTs.o out/sockets/socket.o
 	gcc $^ -o debug/ZZTs
 
+server: out/server/ZZTs.o
+	gcc $^ -o out/ZZTs
+
+client: out/client/ZZTc.o
+	gcc $^ -o out/ZZTc
+
+out/client/ZZTc.o: src/client/client.c src/client/client.h
+	gcc -c src/client/client.c -o out/client/ZZTc.o
+
+out/server/ZZTs.o: src/server/server.c src/server/server.h
+	gcc -c src/server/server.c -o out/server/ZZTs.o
+
 out/sockets/ZZTs.o: src/sockets/testServ.c src/sockets/socket.h
 	gcc -c -Wall src/sockets/testServ.c -o out/sockets/ZZTs.o
 
