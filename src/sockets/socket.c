@@ -9,7 +9,6 @@
 
 #include "socket.h"
 
-
 SocketManager *newSocket(int domain, int type, int protocol){
     SocketManager *sock = (SocketManager *) malloc(sizeof(SocketManager));
 
@@ -70,7 +69,7 @@ void connectServerSocket(SocketManager *sock){
         exit(-2);
     }
 
-    printf("Serveur en écoute sur [%s:%d] avec succès\n\n", sock->address, sock->port);
+    printf("Serveur en écoute sur le port [:%d] avec succès\n\n", sock->port);
 }
 
 void serverListener(SocketManager *server, int limit){
@@ -84,8 +83,8 @@ void serverListener(SocketManager *server, int limit){
     SocketManager *distant = newSocket(PF_INET, SOCK_STREAM, 0);
     struct sockaddr_in income;
     //Serveur en attente indéfiniment
+    printf("Attente d'une connexion (Ctrl+C pour fermer le serveur)\n\n");
     while(1){
-        printf("Attente d'une connexion (Ctrl+C pour fermer le serveur)\n\n");
         distant->descSocket = accept(server->descSocket, (struct sockaddr *)&(income), &(server->addrLength));
         if (distant->descSocket < 0){
             perror("accept");
@@ -93,14 +92,15 @@ void serverListener(SocketManager *server, int limit){
             closeSocket(server);
             exit(-4);
         }else{
-            getString(distant, 100);
-            sendString(distant, "ok");
+            getString(distant, 150);
+            sendString(distant, "OK");
         }
+        close(distant->descSocket);
     }
 }
 
 void sendString(SocketManager *sock, char *msg){
-    int bytesNb = write(sock->descSocket, msg, strlen(msg));
+    int bytesNb = send(sock->descSocket, msg, strlen(msg), 0);
 
     switch(bytesNb){
         case -1:
@@ -123,7 +123,7 @@ void sendString(SocketManager *sock, char *msg){
 
 void getString(SocketManager *sock, int size){
     char *recept = (char *) malloc(sizeof(char) * size);
-    int bytesNb = read(sock->descSocket, recept, sizeof(char) * size);
+    int bytesNb = recv(sock->descSocket, recept, sizeof(char) * size, 0);
 
     switch(bytesNb){
         case -1:
@@ -141,6 +141,8 @@ void getString(SocketManager *sock, int size){
             printf("Message reçu depuis la connexion distante : \"%s\" (%d bytes)\n", recept, bytesNb);
         break;
     }
+
+    free(recept);
 }
 
 void closeSocket(SocketManager *sock){
