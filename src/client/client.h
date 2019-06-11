@@ -1,7 +1,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#define BUFF_MAX 100
+#define BUFF_MAX 150
 #define PORT 5000
 
 /* ERROR CODE LIST :

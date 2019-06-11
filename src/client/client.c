@@ -21,14 +21,15 @@ void sendData(int sockfd){
 
         write(sockfd, buffer, sizeof(buffer)); 
 
-        printf("message sent to server <%s>\n", buffer);
+        //printf("message sent to server <%s>\n", buffer);
 
         bzero(buffer, sizeof(buffer)); 
         read(sockfd, buffer, sizeof(buffer)); 
-        printf("SERVER RESPONDED : %s\n", buffer); 
+        /*if(strcmp(buffer, "OK") != 0)
+            printf(">>%s\n", buffer); */
 
-        if ((strncmp(buffer, "QUIT", 4)) == 0) { 
-            printf("Server closed the connection, now closing client...\n"); 
+        if ((strncmp(buffer, "QUIT", 4)) == 0 || strcmp(buffer, "Server stopping now") == 0) { 
+            printf("Server closed the connection...\n"); 
             break; 
         } 
     } 

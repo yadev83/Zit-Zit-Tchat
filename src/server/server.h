@@ -1,7 +1,7 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#define BUFF_MAX 100
+#define BUFF_MAX 150
 #define CLIENT_MAX 5
 #define PORT 5000
 
