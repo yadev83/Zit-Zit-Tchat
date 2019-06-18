@@ -5,6 +5,9 @@
 #include <netdb.h>
 #include <sys/socket.h>
 
+#include <ncurses.h>
+#include <pthread.h>
+
 #include "client.h"
 
 void sendData(int sockfd){
@@ -33,6 +36,16 @@ void sendData(int sockfd){
             break; 
         } 
     } 
+}
+
+void getData(int sockfd){
+    char buffer[BUFF_MAX];
+    while(1){
+        bzero(buffer, sizeof(buffer));
+        
+        read(sockfd, buffer, sizeof(buffer));
+        printf("\n<%s\n>", buffer);
+    }
 }
 
 struct sockaddr_in *newClient(int domain, in_addr_t addr, int port){
@@ -88,7 +101,24 @@ int main(int argc, char *argv[]){
     }
 
     // CONNECTED TO SERVER READY TO TALK
-    sendData(sockfd); 
+    pthread_t threadTalk, threadListen;
+    void *th_sendData = &(sendData);
+    void *th_getData = &(getData);
+
+    if(pthread_create(&threadTalk, NULL, th_sendData, (void *)sockfd)){
+	    perror("pthread_create");
+	    return EXIT_FAILURE;
+    }
+
+    if(pthread_create(&threadListen, NULL, th_getData, (void *)sockfd)){
+        perror("pthread create");
+        return EXIT_FAILURE;
+    }
+
+    if(pthread_join(threadTalk, NULL)) {
+	    perror("pthread_join");
+	    return EXIT_FAILURE;
+    }
   
     // close the socket 
     close(sockfd); 

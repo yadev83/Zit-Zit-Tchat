@@ -146,7 +146,7 @@ int main(void){
                     if(multiconfd[i] == 0){
                         multiconfd[i] = connfd;
                         printf("Server accepted a new connection on socket #%d @[%s:%d]\n", connfd, inet_ntoa(cli->sin_addr), ntohs(cli->sin_port));
-                        /*for(int j = 0; j < CLIENT_MAX; ++j){
+                        for(int j = 0; j < CLIENT_MAX; ++j){
                             if(i != j && multiconfd[j] != 0 && multiconfd[j] != connfd){
                                 strcpy(idGadjo, "[");
                                 strcat(idGadjo, inet_ntoa(cli->sin_addr));
@@ -158,7 +158,7 @@ int main(void){
                                 strcat(buffToSend, "Joined\0");
                                 write(multiconfd[j], buffToSend, strlen(buffToSend));
                             }
-                        }*/
+                        }
                         break;
                     }
                 }
@@ -177,7 +177,7 @@ int main(void){
                     if(strcmp(buffer, "!exit") == 0){
                         write(connfd, "QUIT", 5);
                         printf("Gadjo déconnecté [%s:%d]\n", inet_ntoa(cli->sin_addr) , ntohs(cli->sin_port));
-                        /*for(int j = 0; j < CLIENT_MAX; ++j){
+                        for(int j = 0; j < CLIENT_MAX; ++j){
                             if(i != j && multiconfd[j] != 0 && multiconfd[j] != connfd){
                                 strcpy(idGadjo, "[");
                                 strcat(idGadjo, inet_ntoa(cli->sin_addr));
@@ -189,7 +189,7 @@ int main(void){
                                 strcat(buffToSend, "Left\0");
                                 write(multiconfd[j], buffToSend, strlen(buffToSend));
                             }
-                        }*/
+                        }
                         //Close the socket and mark as 0 in list for reuse
                         close( connfd );
                         multiconfd[i] = 0;
@@ -206,7 +206,7 @@ int main(void){
                         close(sockfd);
                         exit(0);
                     }else{
-                        /*for(int j = 0; j < CLIENT_MAX; ++j){
+                        for(int j = 0; j < CLIENT_MAX; ++j){
                             if(i != j && multiconfd[j] != 0 && multiconfd[j] != connfd){
                                 strcpy(idGadjo, "[");
                                 strcat(idGadjo, inet_ntoa(cli->sin_addr));
@@ -218,7 +218,7 @@ int main(void){
                                 strcat(buffToSend, buffer);
                                 write(multiconfd[j], buffToSend, strlen(buffToSend));
                             }
-                        }*/
+                        }
                         write(connfd, "OK", 3);
                     }
                 }
