@@ -9,13 +9,13 @@
 #include <pthread.h>
 
 #include "client.h"
+#include "../gfx/gfx.h"
 
 void sendData(int sockfd){
     char buffer[BUFF_MAX]; 
     int n = 0; 
     while(1){ 
         bzero(buffer, sizeof(buffer)); 
-        printf("> "); 
         n = 0; 
 
         //Get characters
@@ -26,15 +26,8 @@ void sendData(int sockfd){
 
         //printf("message sent to server <%s>\n", buffer);
 
-        bzero(buffer, sizeof(buffer)); 
-        read(sockfd, buffer, sizeof(buffer)); 
         /*if(strcmp(buffer, "OK") != 0)
             printf(">>%s\n", buffer); */
-
-        if ((strncmp(buffer, "QUIT", 4)) == 0 || strcmp(buffer, "Server stopping now") == 0) { 
-            printf("Server closed the connection...\n"); 
-            break; 
-        } 
     } 
 }
 
@@ -44,7 +37,13 @@ void getData(int sockfd){
         bzero(buffer, sizeof(buffer));
         
         read(sockfd, buffer, sizeof(buffer));
-        printf("\n<%s\n>", buffer);
+        if((strcmp(buffer, "OK") != 0))
+            printf("\n<%s>\n", buffer);
+
+        if ((strncmp(buffer, "QUIT", 4)) == 0 || strcmp(buffer, "Server stopping now") == 0) { 
+            printf("Server closed the connection...\n"); 
+            break; 
+        } 
     }
 }
 
@@ -105,21 +104,23 @@ int main(int argc, char *argv[]){
     void *th_sendData = &(sendData);
     void *th_getData = &(getData);
 
-    if(pthread_create(&threadTalk, NULL, th_sendData, (void *)sockfd)){
-	    perror("pthread_create");
-	    return EXIT_FAILURE;
-    }
-
     if(pthread_create(&threadListen, NULL, th_getData, (void *)sockfd)){
         perror("pthread create");
         return EXIT_FAILURE;
     }
 
-    if(pthread_join(threadTalk, NULL)) {
+    write(sockfd, "WESH", sizeof(char) * BUFF_MAX); 
+
+    if(pthread_create(&threadTalk, NULL, th_sendData, (void *)sockfd)){
+	    perror("pthread_create");
+	    return EXIT_FAILURE;
+    }
+
+    if(pthread_join(threadListen, NULL)) {
 	    perror("pthread_join");
 	    return EXIT_FAILURE;
     }
-  
+
     // close the socket 
     close(sockfd); 
 }

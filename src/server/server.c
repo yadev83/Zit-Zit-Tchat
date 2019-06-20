@@ -205,6 +205,8 @@ int main(void){
                         printf("closing server\n");
                         close(sockfd);
                         exit(0);
+                    }else if(strcmp(buffer, "WESH") == 0){
+                        write(connfd, "J'en veux Jo !", 15);
                     }else{
                         for(int j = 0; j < CLIENT_MAX; ++j){
                             if(i != j && multiconfd[j] != 0 && multiconfd[j] != connfd){
