@@ -3,10 +3,10 @@ all: debug/ZZTc debug/ZZTs
 debug/ZZTc: out/sockets/ZZTc.o out/sockets/socket.o out/tools/input.o out/gfx/gfx.o
 	gcc $^ -o debug/ZZTc -lpthread -lncurses
 
-debug/ZZTs: out/sockets/ZZTs.o out/sockets/socket.o
+debug/ZZTs: out/sockets/ZZTs.o out/sockets/socket.o out/interpreter/interpreter.o
 	gcc $^ -o debug/ZZTs
 
-server: out/server/ZZTs.o
+server: out/server/ZZTs.o out/interpreter/interpreter.o
 	gcc $^ -o out/ZZTs
 
 client: out/client/ZZTc.o out/gfx/gfx.o
@@ -32,3 +32,6 @@ out/sockets/socket.o: src/sockets/socket.c src/sockets/socket.h
 
 out/gfx/gfx.o: src/gfx/gfx.c src/gfx/gfx.h
 	gcc -c -Wall src/gfx/gfx.c -o out/gfx/gfx.o
+
+out/interpreter/interpreter.o: src/interpreter/interpreter.c src/interpreter/interpreter.h
+	gcc -c -Wall src/interpreter/interpreter.c -o out/interpreter/interpreter.o

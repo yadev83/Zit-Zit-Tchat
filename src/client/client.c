@@ -40,7 +40,7 @@ void getData(int sockfd){
         if((strcmp(buffer, "OK") != 0))
             printf("\n<%s>\n", buffer);
 
-        if ((strncmp(buffer, "QUIT", 4)) == 0 || strcmp(buffer, "Server stopping now") == 0) { 
+        if ((strcmp(buffer, "QUIT")) == 0) { 
             printf("Server closed the connection...\n"); 
             break; 
         } 
@@ -108,8 +108,6 @@ int main(int argc, char *argv[]){
         perror("pthread create");
         return EXIT_FAILURE;
     }
-
-    write(sockfd, "WESH", sizeof(char) * BUFF_MAX); 
 
     if(pthread_create(&threadTalk, NULL, th_sendData, (void *)sockfd)){
 	    perror("pthread_create");

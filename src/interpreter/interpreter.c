@@ -1,18 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "string.h"
+#include <string.h>
 #include "interpreter.h"
-int main(void){
+
+/*int main(void){
 	char* string;
 	defineStr(&string, 25);
 	sprintf(string,"!login Martin Corto");
-	printf("%s\n", string);
-	interpreter(string);
-
+	char **data = interpreter(string);
+	printf("%s\n", data[0]);
 	return 0;
+}*/
+
+char *cmd;
+char *element;
+
+char *getCmd(){
+	return cmd;
 }
+
+char *getElement(){
+	return element;
+}
+
 void interpreter(char* msg){
-	char *cmd;
 	defineStr(&cmd, LENCMD);
 	int iDetect;
 	if(msg[0]!='!'){
@@ -24,13 +35,10 @@ void interpreter(char* msg){
 			error();
 		}
 		else{
-		char* element;
-		defineStr(&element, strlen(msg)-iDetect);
-		cutString(cmd, element, msg, iDetect);
-		
-		printf("%s\n", cmd);
-		printf("%s\n", element);
-	}
+			printf("%d\n", iDetect);
+			defineStr(&element, strlen(msg)-iDetect);
+			cutString(cmd, element, msg, iDetect);
+		}
 	}
 }
 
@@ -45,13 +53,14 @@ void cutString(char* str1, char* str2, char* msg, int k){
 		{
 			str1[i-1]=msg[i];
 		}
-	free(msg);
 }
 
 int IDetect(char* msg){
 	int i=1;
 	while(msg[i] != ' '){
 		i++;
+		if(i == strlen(msg))
+			break;
 	}
 	return i;
 }

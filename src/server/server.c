@@ -11,6 +11,7 @@
 #include <sys/types.h> 
 
 #include "server.h"
+#include "../interpreter/interpreter.h"
 
 void getData(int sockfd){
     char buffer[BUFF_MAX];
@@ -104,13 +105,16 @@ int main(void){
     int max_sd, activity;
 
     char buffer[BUFF_MAX];
-    char buffToSend[BUFF_MAX+30];
-    char idGadjo[30];
+    char buffToSend[BUFF_MAX*2];
+    char idGadjo[BUFF_MAX*2];
     char tmpPort[6];
     int n = 0;
 
+    char **pseudos = (char **) malloc(sizeof(char *) * CLIENT_MAX);
+
     for(int i = 0; i < CLIENT_MAX; ++i){
         multiconfd[i] = 0;
+        pseudos[i] = NULL;
     }
 
     while(1){
@@ -173,48 +177,59 @@ int main(void){
                     n = read(connfd, buffer, BUFF_MAX);
                     getpeername(connfd , (struct sockaddr*)cli , (socklen_t*)&len);
                     printf("Message reçu socket %d @[%s:%d]\n>> %s (%d Bytes)\n", connfd, inet_ntoa(cli->sin_addr), ntohs(cli->sin_port), buffer, n);
+                    if(buffer[0] == '!'){
+                        
+                        //Message "commande"
+                        interpreter(buffer);
 
-                    if(strcmp(buffer, "!exit") == 0){
-                        write(connfd, "QUIT", 5);
-                        printf("Gadjo déconnecté [%s:%d]\n", inet_ntoa(cli->sin_addr) , ntohs(cli->sin_port));
-                        for(int j = 0; j < CLIENT_MAX; ++j){
-                            if(i != j && multiconfd[j] != 0 && multiconfd[j] != connfd){
-                                strcpy(idGadjo, "[");
-                                strcat(idGadjo, inet_ntoa(cli->sin_addr));
-                                strcat(idGadjo, ":");
-                                sprintf(tmpPort, "%d", ntohs(cli->sin_port));
-                                strcat(idGadjo, tmpPort);
-                                strcat(idGadjo, "] ");
-                                strcpy(buffToSend, idGadjo);
-                                strcat(buffToSend, "Left\0");
-                                write(multiconfd[j], buffToSend, strlen(buffToSend));
+                        //Login
+                        if(strcmp(getCmd(), "login") == 0){
+                            printf("Now creating login\n");
+                            if(pseudos[i] == NULL){
+                                pseudos[i] = (char *) malloc(sizeof(char) * strlen(getElement()));
+                                strcpy(pseudos[i], getElement());
+                                write(connfd, "You now have a username !", 26);
+                            }else{
+                                write(connfd, "You already have a username !", 30);
+                            }
+                        }else if(strcmp(getCmd(), "exit") == 0){
+                            //Exit
+                            printf("Now closing a connection\n");
+                            write(connfd, "QUIT", 5);
+                            close(connfd);
+                            multiconfd[i] = 0;
+                            printf("Gadjo déconnecté [%s:%d]\n", inet_ntoa(cli->sin_addr) , ntohs(cli->sin_port));
+                            for(int j = 0; j < CLIENT_MAX; ++j){
+                                if(i != j && multiconfd[j] != 0 && multiconfd[j] != connfd){
+                                    strcpy(idGadjo, "[");
+                                    if(pseudos[i] == NULL){
+                                        strcat(idGadjo, inet_ntoa(cli->sin_addr));
+                                        strcat(idGadjo, ":");
+                                        sprintf(tmpPort, "%d", ntohs(cli->sin_port));
+                                        strcat(idGadjo, tmpPort);
+                                    }else{
+                                        strcat(idGadjo, pseudos[i]);
+                                    }
+                                    strcat(idGadjo, "] ");
+                                    strcpy(buffToSend, idGadjo);
+                                    strcat(buffToSend, "Left the server");
+                                    write(multiconfd[j], buffToSend, strlen(buffToSend));
+                                }
                             }
                         }
-                        //Close the socket and mark as 0 in list for reuse
-                        close( connfd );
-                        multiconfd[i] = 0;
-                    }else if(strcmp(buffer, "!stop") == 0){
-                        printf("closing connexions\n");
-                        for(int j = 0; j < CLIENT_MAX; ++j){
-                            if(multiconfd[j] != 0){
-                                write(multiconfd[j], "Server stopping now", 20);
-                                close(multiconfd[j]);
-                                multiconfd[j] = 0;
-                            }
-                        }
-                        printf("closing server\n");
-                        close(sockfd);
-                        exit(0);
-                    }else if(strcmp(buffer, "WESH") == 0){
-                        write(connfd, "J'en veux Jo !", 15);
                     }else{
+                        //Message "broadcast"
                         for(int j = 0; j < CLIENT_MAX; ++j){
                             if(i != j && multiconfd[j] != 0 && multiconfd[j] != connfd){
                                 strcpy(idGadjo, "[");
-                                strcat(idGadjo, inet_ntoa(cli->sin_addr));
-                                strcat(idGadjo, ":");
-                                sprintf(tmpPort, "%d", ntohs(cli->sin_port));
-                                strcat(idGadjo, tmpPort);
+                                if(pseudos[i] == NULL){
+                                    strcat(idGadjo, inet_ntoa(cli->sin_addr));
+                                    strcat(idGadjo, ":");
+                                    sprintf(tmpPort, "%d", ntohs(cli->sin_port));
+                                    strcat(idGadjo, tmpPort);
+                                }else{
+                                    strcat(idGadjo, pseudos[i]);
+                                }
                                 strcat(idGadjo, "] ");
                                 strcpy(buffToSend, idGadjo);
                                 strcat(buffToSend, buffer);
